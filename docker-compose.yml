@@ -1,0 +1,79 @@
+networks:
+  stock-manager-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: stock-manager-application-database
+    environment:
+      POSTGRES_DB: DALYDA
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stock-manager-network
+
+  mailHog:
+    image: mailhog/mailhog:latest
+    container_name: DALYDA-mailHog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8025" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - stock-manager-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stock-manager-application
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailHog:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/DALYDA
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+      SPRING_MAIL_HOST: mailHog
+      SPRING_MAIL_PORT: 1025
+      spring.mail.username: ""
+      spring.mail.password: ""
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "false"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "false"
+      SPRING_MAIL_FROM: no-reply@dalyda.com
+
+      jwt.secret: Y7FkT0KxcpHb9y5A4UO3fZzw6sAo+Pld+ArwxwQZscU=
+      JWT_EXPIRATION: 86400000
+
+      server.port: 8080
+      spring.jpa.show-sql: "false"
+
+    ports:
+      - "8080:8080"
+    networks:
+      - stock-manager-network
+    restart: unless-stopped
