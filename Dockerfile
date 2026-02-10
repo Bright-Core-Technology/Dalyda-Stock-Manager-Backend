@@ -17,6 +17,9 @@ WORKDIR /app
 # Install curl for health checks
 RUN apk add --no-cache curl
 
+# Set Spring Boot test profile for CI/CD; no .env file needed, secrets via GitHub Actions
+ENV SPRING_PROFILES_ACTIVE=test
+
 # Copy the JAR from build stage
 COPY --from=build /app/target/*.jar app.jar
 
