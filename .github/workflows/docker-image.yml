@@ -1,22 +1,25 @@
 name: Docker Image CI
 
-# Trigger CI on pushes and pull requests to the main branch
+# Only trigger AFTER maven.yml completes successfully
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: [ "Java CI with Maven" ]
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Use latest Ubuntu runner for GitHub Actions
+    runs-on: ubuntu-latest
+    # Only run if maven.yml (tests) passed
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
-        # Log in to Docker Registry
-        # Using secrets for security:
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -24,31 +27,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-        # Run tests before building
-        # Prevents pushing broken images if tests fail
-
-      - name: Run tests
-        run: mvn test
-
-        # Build and push Docker image with caching
-        # Uses commit SHA for unique tag and "latest" for easy pulling
-        # Leverages Docker layer caching for faster builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: . # Build context is the repository root
-          file: ./Dockerfile  # Dockerfile path
-          push: true  # Push image to Docker Hub
+          context: .
+          file: ./Dockerfile
+          push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/my-image-name:${{ github.sha }}
-            ${{ secrets.DOCKER_USERNAME }}/my-image-name:latest
-
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/my-image-name:latest
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/my-image-name:latest,mode=max
-
-
-
-
-
-
+            ${{ secrets.DOCKER_USERNAME }}/dalyda-stock-manager:${{ github.event.workflow_run.head_commit }}
+            ${{ secrets.DOCKER_USERNAME }}/dalyda-stock-manager:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/dalyda-stock-manager:latest
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/dalyda-stock-manager:latest,mode=max
