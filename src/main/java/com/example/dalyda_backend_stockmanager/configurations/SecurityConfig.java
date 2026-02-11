@@ -28,13 +28,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AccessDeniedHandler accessDeniedHandler) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**","/v2/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**")
+                        .requestMatchers("/v3/api-docs/**", "/v2/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**")
                         .permitAll()
                         .requestMatchers("/test/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/api/v1/stock/**").hasAnyAuthority("ADMIN","USER")
-                        .requestMatchers("/api/v1/sales/**").hasAnyAuthority("ADMIN","USER")
+                        .requestMatchers("/api/v1/users/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/stock/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/v1/sales/**").hasAnyAuthority("ADMIN", "USER")
                         .anyRequest()
                         .authenticated())
                 .exceptionHandling(ex -> ex

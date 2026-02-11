@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name="sales")
+@Table(name = "sales")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,4 +27,5 @@ public class Sales {
     @Enumerated(EnumType.STRING)
     private ContainerWeights weight;
     private String containerName;
+    private String recordedBy;
 }

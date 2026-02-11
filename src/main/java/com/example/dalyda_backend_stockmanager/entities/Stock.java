@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name="stock")
+@Table(name = "stock")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +23,5 @@ public class Stock {
     private String container_name;
     @Enumerated(EnumType.STRING)
     private ContainerWeights weight;
+    private Integer price;
 }

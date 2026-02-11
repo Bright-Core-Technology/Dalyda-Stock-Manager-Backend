@@ -31,14 +31,26 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignupDto {
-        @NotBlank(message="firstName can not be blank")
+        @NotBlank(message = "firstName can not be blank")
         private String firstName;
-        @NotBlank(message="lastName can not be blank")
+        @NotBlank(message = "lastName can not be blank")
         private String lastName;
-        @Email(message="Invalid Email Format")
-        @NotBlank(message="Email is Required")
+        @Email(message = "Invalid Email Format")
+        @NotBlank(message = "Email is Required")
         private String email;
-        @NotBlank(message="phone Number can not blank")
+        @NotBlank(message = "phone Number can not blank")
         private String phoneNumber;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class LoginDto {
+        @NotBlank(message = "Email can not be blank")
+        private String email;
+        @NotBlank(message = "Password can not be blank")
+        private String password;
+    }
+
 }
