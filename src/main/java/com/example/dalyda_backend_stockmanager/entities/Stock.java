@@ -23,5 +23,6 @@ public class Stock {
     private String container_name;
     @Enumerated(EnumType.STRING)
     private ContainerWeights weight;
-    private Integer price;
+    private Double price;
+    private String recordedBy;
 }

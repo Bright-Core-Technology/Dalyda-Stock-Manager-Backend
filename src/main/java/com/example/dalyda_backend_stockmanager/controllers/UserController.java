@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User Controller", description = "Handles Users")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 @PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
@@ -26,7 +26,7 @@ public class UserController {
 
     // user Registration
     @Operation(summary = "User Registration", description = "Register Users")
-    @PostMapping("/user/registration")
+    @PostMapping("/registration")
     public ResponseEntity<GenericResponse<UserDto.ViewUserDto>> userRegistration(@Valid @RequestBody UserDto.SignupDto signupDto, @RequestParam Role role) {
         var userSignup = userService.signup(signupDto, role);
         return ResponseEntity.status(HttpStatus.CREATED).body(new GenericResponse<>("User Registered Successful", userSignup));
