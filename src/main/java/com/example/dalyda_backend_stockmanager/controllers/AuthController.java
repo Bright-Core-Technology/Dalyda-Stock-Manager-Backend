@@ -5,10 +5,14 @@ import com.example.dalyda_backend_stockmanager.responses.GenericResponse;
 import com.example.dalyda_backend_stockmanager.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,4 +37,15 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse<>("token to be used to login", token));
     }
 
+    // logout endpoint
+    @Operation(summary = "User Logout", description = "User Logout Endpoint")
+    @PostMapping("/logout")
+    public ResponseEntity<GenericResponse<String>> logout(HttpServletRequest request,
+                                                          HttpServletResponse response,
+                                                          Authentication authentication) {
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse<>("User logged out successfully", null));
+    }
 }

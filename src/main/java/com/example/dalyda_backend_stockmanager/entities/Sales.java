@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -22,8 +23,8 @@ public class Sales {
     private String code;
     private String name;
     private Integer quantity;
-    private Double price;
-    private Double totalPrice;
+    private BigDecimal price;
+    private BigDecimal totalPrice;
     @Enumerated(EnumType.STRING)
     private ContainerWeights weight;
     private String containerName;

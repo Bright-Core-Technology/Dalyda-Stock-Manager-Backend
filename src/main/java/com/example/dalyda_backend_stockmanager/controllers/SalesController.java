@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Sales Controller", description = "Handles Sales")
@@ -44,7 +45,7 @@ public class SalesController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Weekly Sales Value", description = "The value of all the weekly sales")
     @GetMapping("/value")
-    public ResponseEntity<GenericResponse<Integer>> weeklySalesValue() {
+    public ResponseEntity<GenericResponse<BigDecimal>> weeklySalesValue() {
         var weeklySalesValue = salesService.getWeeklySalesValue();
         return ResponseEntity.status(HttpStatus.OK).body(new GenericResponse<>("This is the total Weekly Sales", weeklySalesValue));
     }

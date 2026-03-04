@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public interface StockRepository extends JpaRepository<Stock, UUID> {
     Integer getTotalStock();
 
     @Query("SELECT SUM(s.price) FROM Stock s")
-    Integer getTotalStockPrice();
+    BigDecimal getTotalStockPrice();
 
     @Query("SELECT s FROM Stock s")
     Page<Stock> findAllStock(Pageable pageable);
@@ -25,12 +26,21 @@ public interface StockRepository extends JpaRepository<Stock, UUID> {
     @Query("""
              SELECT s FROM Stock s
              WHERE
-                 LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-                 LOWER(s.code) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-                 LOWER(s.container_name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 (
+                    :keyword IS NULL OR
+                    LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+                    LOWER(s.code) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 )
+                 AND
+                 (
+                    :containerName IS NULL OR
+                    LOWER(s.containerName) = LOWER(:containerName)
+                 )
             """)
-    Page<Stock> searchStock(@Param("keyword") String keyword, Pageable pageable);
+    Page<Stock> searchStock(@Param("keyword") String keyword,
+                            @Param("containerName") String containerName,
+                            Pageable pageable);
 
-    @Query("SELECT DISTINCT s.container_name FROM Stock s ORDER BY s.container_name")
+    @Query("SELECT DISTINCT s.containerName FROM Stock s ORDER BY s.containerName")
     List<String> findDistinctContainerNames();
 }

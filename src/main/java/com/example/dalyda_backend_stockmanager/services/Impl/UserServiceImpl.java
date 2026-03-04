@@ -3,14 +3,14 @@ package com.example.dalyda_backend_stockmanager.services.Impl;
 import com.example.dalyda_backend_stockmanager.dtos.UserDto;
 import com.example.dalyda_backend_stockmanager.entities.Role;
 import com.example.dalyda_backend_stockmanager.entities.Users;
+import com.example.dalyda_backend_stockmanager.exceptions.ResourceNotFoundException;
 import com.example.dalyda_backend_stockmanager.mappers.UserMapper;
 import com.example.dalyda_backend_stockmanager.repositories.UserRepository;
 import com.example.dalyda_backend_stockmanager.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSenderImpl mailSender;
+    private final JavaMailSender mailSender;
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtService;
 

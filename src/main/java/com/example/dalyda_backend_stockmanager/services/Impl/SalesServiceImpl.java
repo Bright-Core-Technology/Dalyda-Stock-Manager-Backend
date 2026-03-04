@@ -7,6 +7,8 @@ import com.example.dalyda_backend_stockmanager.services.SalesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -16,16 +18,24 @@ public class SalesServiceImpl implements SalesService {
     private final SalesRepository salesRepository;
 
     @Override
-    public Integer getWeeklySales() { // fix the logic of this
-        var weeklySales = salesRepository.getWeeklySales();
-        if (weeklySales == null) return 0;
+    public Integer getWeeklySales() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusDays(6);
+        var weeklySales = salesRepository.getWeeklySales(startDate, endDate);
+        if (weeklySales == null) {
+            return 0;
+        }
         return weeklySales;
     }
 
     @Override
-    public Integer getWeeklySalesValue() {
-        var weeklySalesValue = salesRepository.getWeeklySalesValue();
-        if (weeklySalesValue == null) return 0;
+    public BigDecimal getWeeklySalesValue() {
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusDays(6);
+        var weeklySalesValue = salesRepository.getWeeklySalesValue(startDate, endDate);
+        if (weeklySalesValue == null) {
+            return BigDecimal.ZERO;
+        }
         return weeklySalesValue;
     }
 

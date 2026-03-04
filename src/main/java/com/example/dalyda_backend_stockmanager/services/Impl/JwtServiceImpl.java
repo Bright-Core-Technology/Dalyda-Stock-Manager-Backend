@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,17 @@ import java.util.function.Function;
 public class JwtServiceImpl {
 
     @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private String secretKey;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpirationMillis;
+
+    @PostConstruct
+    void validateJwtConfig() {
+        if (secretKey == null || secretKey.isBlank()) {
+            throw new IllegalStateException("JWT secret is required. Set JWT_SECRET in your environment.");
+        }
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -31,19 +42,14 @@ public class JwtServiceImpl {
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
-
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails
-
-    ) {
-
-
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMillis))
                 .signWith(getSignInKey())
                 .compact();
     }
@@ -72,7 +78,7 @@ public class JwtServiceImpl {
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

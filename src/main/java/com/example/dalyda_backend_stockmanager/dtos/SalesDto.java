@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class SalesDto {
@@ -20,6 +21,6 @@ public class SalesDto {
         private String containerName;
         private String recordedBy;
         private Integer quantity;
-        private Double totalPrice;
+        private BigDecimal totalPrice;
     }
 }

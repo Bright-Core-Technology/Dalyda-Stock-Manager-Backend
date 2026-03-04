@@ -21,7 +21,6 @@ public class UserDto {
         private String firstName;
         private String lastName;
         private String email;
-        private String password;
         private String phoneNumber;
         private Role role;
     }
@@ -47,6 +46,7 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class LoginDto {
+        @Email(message = "Invalid Email Format")
         @NotBlank(message = "Email can not be blank")
         private String email;
         @NotBlank(message = "Password can not be blank")

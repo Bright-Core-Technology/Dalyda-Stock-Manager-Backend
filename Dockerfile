@@ -1,5 +1,5 @@
 # Use Maven to build the application
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copy pom.xml first for dependency caching
@@ -11,14 +11,12 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage - use JRE only (smaller image)
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# Set Spring Boot test profile for CI/CD; no .env file needed, secrets via GitHub Actions
-ENV SPRING_PROFILES_ACTIVE=test
 
 # Copy the JAR from build stage
 COPY --from=build /app/target/*.jar app.jar
