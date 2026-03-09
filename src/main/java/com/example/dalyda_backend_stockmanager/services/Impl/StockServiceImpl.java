@@ -141,7 +141,7 @@ public class StockServiceImpl implements StockService {
 
         Stock updatedStock = stockRepository.save(stock);
 
-        String details = changes.length() == 0
+        String details = changes.isEmpty()
                 ? "Update called with no effective field change"
                 : "Updated fields: " + changes;
         logAudit(stockId, StockAuditAction.UPDATE, updatedBy, details);

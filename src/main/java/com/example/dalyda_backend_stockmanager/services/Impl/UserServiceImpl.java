@@ -8,6 +8,7 @@ import com.example.dalyda_backend_stockmanager.mappers.UserMapper;
 import com.example.dalyda_backend_stockmanager.repositories.UserRepository;
 import com.example.dalyda_backend_stockmanager.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -50,7 +50,7 @@ public class TokenRevocationServiceImpl implements TokenRevocationService {
         return revokedTokenRepository.existsByToken(token);
     }
 
-    @Override
+    // Scheduled cleanup task - runs daily at 2 AM
     @Transactional
     @Scheduled(cron = "0 0 2 * * ?")
     public void cleanupExpiredTokens() {

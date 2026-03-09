@@ -33,10 +33,7 @@ public class SalesServiceImpl implements SalesService {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(6);
         var weeklySalesValue = salesRepository.getWeeklySalesValue(startDate, endDate);
-        if (weeklySalesValue == null) {
-            return BigDecimal.ZERO;
-        }
-        return weeklySalesValue;
+        return Objects.requireNonNullElse(weeklySalesValue, BigDecimal.ZERO);
     }
 
     @Override
