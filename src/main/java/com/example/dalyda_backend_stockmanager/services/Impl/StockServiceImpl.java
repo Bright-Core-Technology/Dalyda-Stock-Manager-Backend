@@ -297,7 +297,7 @@ public class StockServiceImpl implements StockService {
     }
 
     private void appendChange(StringBuilder changes, String field, Object oldValue, Object newValue) {
-        if (changes.length() > 0) {
+        if (!changes.isEmpty()) {
             changes.append("; ");
         }
         changes.append(field)

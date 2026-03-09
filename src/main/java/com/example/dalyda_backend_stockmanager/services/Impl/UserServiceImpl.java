@@ -29,6 +29,9 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtService;
 
+    @Value("${app.mail.from}")
+    private String mailFrom;
+
     // method to generate random password as the default password
     private String generateRandomPassword() {
         return UUID.randomUUID().toString().substring(0, 10);
@@ -37,6 +40,7 @@ public class UserServiceImpl implements UserService {
     // method to send mails with the default password when you Sign Up
     private void sendWelcomeEmail(String to, String password, String firstName) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(mailFrom);
         message.setTo(to);
         message.setSubject("Welcome to DALYDA");
         message.setText("Hello," + " " + firstName +
@@ -82,6 +86,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(mailFrom);
         message.setTo(email);
         message.setSubject("Reset Password");
         message.setText("Hello," +
